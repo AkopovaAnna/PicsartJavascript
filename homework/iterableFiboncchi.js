@@ -1,9 +1,11 @@
 const fib = {
 
     [Symbol.iterator]: function () {
-        let n1 = 0, n2 = 1, value = n1 + n2;
+        let n1 = 0;
+        let n2 = 1;
+        let value = n1 + n2;
         return {
-            next: function () {
+            next() {
                 n1 = n2;
                 n2 = value;
                 value = n1 + n2;
