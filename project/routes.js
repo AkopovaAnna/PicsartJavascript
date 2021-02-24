@@ -4,27 +4,33 @@ const routes = [
 
     {
         method: 'GET',
-        path: '/user',
+        path: '/users',
         handler: userController.getAllUsers
     },
     {
         method: 'GET',
-        path: /\/user\/([0-9a-z]+)/,
+        path: /\/users\/([0-9a-z]+)/,
         handler: userController.getUserById
     },
     {
+        method: 'GET',
+        path: /users[?].+/,
+        handler: userController.searchByQuery
+    },
+
+    {
         method: 'POST',
-        path: '/user',
+        path: '/users',
         handler: userController.createUser
     },
     {
         method: 'PUT',
-        path: /\/user\/([0-9a-z]+)/,
+        path: /\/users\/([0-9a-z]+)/,
         handler: userController.updateUser
     },
     {
         method: 'DELETE',
-        path: /\/user\/([0-9a-z]+)/,
+        path: /\/users\/([0-9a-z]+)/,
         handler: userController.deleteUser
     },
 ]

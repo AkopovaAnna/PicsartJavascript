@@ -4,8 +4,12 @@ module.exports = (req, res, routes) => {
     const route = routes.find((route) => {
         const methodMatch = route.method === req.method;
         let pathMatch = false;
-        pathMatch = route.path === req.url;
 
+        if (typeof route.path === 'object') {
+            pathMatch = req.url.match(route.path);
+        } else {
+            pathMatch = route.path === req.url;
+        }
 
         return pathMatch && methodMatch;
     });
@@ -21,8 +25,11 @@ module.exports = (req, res, routes) => {
             req.on('data', buffer => {
                 return route.handler(req, res, param, buffer.toString());
             });
+        } else {
+            return route.handler(req, res, param, null); //no body
         }
-    } else {
-        return helpers.error(res, 'Endpoint not found', 404);
     }
+    // else {
+    //     return helpers.error(res, 'Endpoint not found', 404);
+    // }
 }

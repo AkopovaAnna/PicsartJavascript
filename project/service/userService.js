@@ -24,8 +24,8 @@ function getUserByName(name) {
 }
 
 function searchUser(pattern) {
-        let user = dao.getUserByPattern(pattern);
-        return user.length !== 0 ? user : `${pattern} not matches`;
+    let user = dao.getUserByPattern(pattern);
+    return user.length !== 0 ? user : `${pattern} not matches`;
 
 }
 
@@ -33,30 +33,25 @@ function removeUserById(id) {
     try {
         dao.deleteUser(id)
         console.log("User deleted successfully");
-    } catch(err) {
+    } catch (err) {
         console.error(err);
     }
 
 }
 
-function updateUser(user) {
-    try {
-        dao.updateUser(user)
-        console.log("User updated successfully");
-    } catch(err) {
-        console.error(err);
-    }
-
-
+function updateUser(param, user) {
+        let id = Number(param);
+        if (dao.getUserById(id)) {
+            user.id = id;
+            dao.updateUser(user);
+            console.log("User updated successfully");
+        } else {
+            console.log("user not found");
+        }
 }
 
 function addUser(user) {
-    try {
-        dao.createUser(user)
-        console.log("User created successfully");
-    } catch(err) {
-        console.error(err);
-    }
+    dao.createUser(user)
 }
 
 module.exports = {

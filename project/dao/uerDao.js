@@ -6,22 +6,15 @@ const converter = require("../dataToUser");
 function createUser(user) {
     let users = getAllUsers();
     let newUser = converter.mapper(user);
-    let id = users.length;
-    if (id > 0) {
-        newUser.id = ++id;
-    } else {
-        newUser.id = 1;
-    }
+    newUser.id = idGenerator(users, "id");
     users.push(newUser);
     fs.writeFileSync(path.resolve('./resources', 'user.json'), JSON.stringify(users))
 }
 
 function getAllUsers() {
     let rawData = fs.readFileSync(path.resolve('./resources', 'user.json'));
-    if (rawData.length > 2) {
-        return JSON.parse(rawData).map(converter.mapper);
-    }
-    return [];
+
+    return JSON.parse(rawData).map(converter.mapper);
 
 }
 
@@ -39,11 +32,32 @@ function getUserByPattern(pattern) {
 }
 
 function updateUser(user) {
-    let id = JSON.parse(user)['id']
-    if (deleteUser(id)) {
-        createUser(user);
-    }
 
+    let updatedUser = converter.mapper(user)
+    let users = getAllUsers();
+    let index = findWithAttr(users, "id", updatedUser.id);
+    users[index] = updatedUser;
+    fs.writeFileSync(path.resolve('./resources', 'user.json'), JSON.stringify(users))
+
+}
+
+function findWithAttr(array, attr, value) {
+    for (let i = 0; i < array.length; i += 1) {
+        if (array[i][attr] === value) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function idGenerator(array, attr) {
+    if (array.length > 0) {
+        let i = array.length - 1
+        let id = array[i][attr];
+        return ++id;
+    } else {
+        return 1;
+    }
 }
 
 function deleteUser(id) {
