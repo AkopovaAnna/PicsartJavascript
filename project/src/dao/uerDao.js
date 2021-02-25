@@ -8,14 +8,13 @@ function createUser(user) {
     let newUser = converter.mapper(user);
     newUser.id = idGenerator(users, "id");
     users.push(newUser);
-    fs.writeFileSync(path.resolve('./resources', 'user.json'), JSON.stringify(users))
+    fs.writeFileSync(path.resolve('../resources', 'user.json'), JSON.stringify(users))
+
 }
 
 function getAllUsers() {
-    let rawData = fs.readFileSync(path.resolve('./resources', 'user.json'));
-
+    let rawData = fs.readFileSync(path.resolve('../resources', 'user.json'));
     return JSON.parse(rawData).map(converter.mapper);
-
 }
 
 function getUserById(id) {
@@ -37,7 +36,7 @@ function updateUser(user) {
     let users = getAllUsers();
     let index = findWithAttr(users, "id", updatedUser.id);
     users[index] = updatedUser;
-    fs.writeFileSync(path.resolve('./resources', 'user.json'), JSON.stringify(users))
+    fs.writeFileSync(path.resolve('../resources', 'user.json'), JSON.stringify(users))
 
 }
 
@@ -66,9 +65,9 @@ function deleteUser(id) {
         let oldUsers = getAllUsers().filter(user => user.id !== id);
 
         if (oldUsers.length > 0) {
-            fs.writeFileSync(path.resolve('./resources', 'user.json'), JSON.stringify(oldUsers))
+            fs.writeFileSync(path.resolve('../resources', 'user.json'), JSON.stringify(oldUsers))
         } else {
-            fs.writeFileSync(path.resolve('./resources', 'user.json'), '[]')
+            fs.writeFileSync(path.resolve('../resources', 'user.json'), '[]')
 
         }
     } else {

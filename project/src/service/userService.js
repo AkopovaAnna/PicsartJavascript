@@ -40,7 +40,7 @@ function removeUserById(id) {
 }
 
 function updateUser(param, user) {
-        let id = Number(param);
+        let id = parseInt(param);
         if (dao.getUserById(id)) {
             user.id = id;
             dao.updateUser(user);

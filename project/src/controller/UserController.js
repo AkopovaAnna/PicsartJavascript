@@ -23,7 +23,7 @@ function getAllUsers(req, res) {
 
 function getById(req, res) {
     try {
-        let id = Number(urlUtil.getPatchVariable(req.url));
+        let id = parseInt(urlUtil.getPatchVariable(req.url));
         let user = service.getUserById(id);
         return helpers.success(res, user);
     } catch (error) {
@@ -34,7 +34,7 @@ function getById(req, res) {
 
 function deleteUser(req, res) {
     try {
-        let id = Number(urlUtil.getPatchVariable(req.url));
+        let id = parseInt(urlUtil.getPatchVariable(req.url));
         service.removeUserById(id);
         return helpers.success(res, id);
     } catch (error) {
