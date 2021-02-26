@@ -18,7 +18,7 @@ module.exports.success = (res, data = null) => {
     res.end(JSON.stringify({
         status: 'success',
         data
-    }, null, 3));
+    }, ));
 };
 
 const addHeaders = (res) => {

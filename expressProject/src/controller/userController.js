@@ -8,7 +8,15 @@ exports.create = (req, res) => {
     }
 }
 
-exports.getAll = (req, res) => {
+exports.getHandler = (req,res) => {
+    if(req.url.includes("?")) {
+        getByQuery(req,res);
+    } else {
+        getAll(req,res);
+    }
+    
+}
+function getAll(req, res) {
     try {
         res.status(200).send(userService.getUsers());
     } catch (err) {
@@ -25,7 +33,7 @@ exports.getById = (req, res) => {
     }
 }
 
-exports.getByQuery = (req, res) => {
+function getByQuery(req, res) {
     let name = req.query.name;
     let token = req.query.token;
 
@@ -40,7 +48,7 @@ exports.getByQuery = (req, res) => {
 
 exports.updateUser = (req, res) => {
     try {
-        userService.updateUser(req.params.id, req.body)
+        userService.updateUser(parseInt(req.params.id), req.body)
         res.status(200).send("updated")
     } catch (err) {
         res.status(500).send("User not updated")
@@ -49,6 +57,7 @@ exports.updateUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
     try {
+        userService.removeUserById(parseInt(req.params.id))
         res.status(200).send("deleted user with id" +req.params.id)
     } catch (err) {
         res.status(500).send("User not deleted");
