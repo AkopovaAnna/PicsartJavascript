@@ -5,7 +5,7 @@ for creating user post management
 
 Authentication was done by uing multer and jwt
 
-UserPost App five CRUD operations on user, post models and uploading images;
+UserPost App use CRUD operations on user, post models and uploading images;
 
 ## API Endpoints 
 
