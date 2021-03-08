@@ -1,5 +1,5 @@
 const validator = require('validator');
-const validText = require('../validation/validText');
+const validText = require('./validText');
 
 const validatePost = (data) => {
     let errors = {};
