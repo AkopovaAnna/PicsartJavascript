@@ -1,19 +1,15 @@
+const router = require("express").Router();
 const postController = require("../controller/postController");
 const uploadImage = require('../service/uploadService');
-const auth = require('../filter/authFilter');
+const auth = require('../middleware/auth').auth;
 
-let router = require("express").Router();
 
-module.exports = (app) => {
+exports.postRoute = router.get("/my/posts", auth, postController.getUserPosts)
+    .post("/:id/posts", auth, uploadImage('image'), postController.createPost)
+    .put("/:id/posts/:postId", auth, uploadImage('image'), postController.updatePost)
+    .get("/:id/posts/:postId", auth, postController.getPostById)
+    .get("/:id/posts", postController.getHandler)
+    .get("/:id/posts/:postId/photos", auth, postController.getPhotos)
+    .delete("/:id/posts/:postId", auth, postController.deletePost)
+    .delete("/:id/posts/:postId/photos/:photoId", auth, postController.deletePhoto);
 
-    router.get("/my/posts", auth, postController.getUserPosts);
-    router.post("/:id/posts", auth, uploadImage('image'), postController.createPost);
-    router.put("/:id/posts/:postId", auth, uploadImage('image'), postController.updatePost);
-    router.get("/:id/posts/:postId", auth, postController.getPostById);
-    router.delete("/:id/posts/:postId", auth, postController.deletePost);
-    router.get("/:id/posts", auth, postController.getHandler);
-    router.get("/:id/posts/:postId/photos", auth, postController.getPhotos);
-    router.delete("/:id/posts:postId/photos/:photoId", auth, postController.deletePhoto);
-
-    app.use("/api/users", router);
-}

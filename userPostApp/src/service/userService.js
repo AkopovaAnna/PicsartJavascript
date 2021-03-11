@@ -1,17 +1,16 @@
 const repo = require('../repository/userRepository');
 const User = require('../model/user');
-const validate = require('../validation/validate');
+const validate = require('../validation/validate').validateRegisterInput;
 
 
 let UserService = {
     register: async (user) => {
         const {errors, isValid} = await validate(user);
         if (!isValid) {
-            throw new Error(JSON.stringify(errors));
+            throw new Error(errors);
         } else {
             let newUser = new User(user);
             await repo.addUser(newUser);
-            return newUser
         }
     },
 
@@ -26,7 +25,7 @@ let UserService = {
     },
 
     getById: async (id) => {
-        await repo.getUserById(id);
+       return  await repo.getUserById(id);
     },
 
     getByEmail: async (email) => {
@@ -40,10 +39,10 @@ let UserService = {
     findByCredentials: async (user) => {
         const {errors, isValid} = await validate(user);
         if (!isValid) {
-            throw new Error(errors);
+            throw new Error(JSON.stringify(errors));
         } else {
             let email = user.email
-            const userData = await User.findOne({email})//await?
+            const userData = await User.findOne({email})
             if (!userData) {
                 throw new Error("Unable to login");
             }

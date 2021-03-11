@@ -1,12 +1,12 @@
 const Post = require('../model/post');
-const validate = require('../validation/validatePost');
+const validate = require('../validation/validatePost').validatePost;
 
 
 const PostService = {
     createPost: async (post) => {
         const {errors, isValid} = await validate(post);
         if (!isValid) {
-            throw new Error(JSON.stringify(errors));
+            throw new Error(errors);
         } else {
             await post.save();
         }

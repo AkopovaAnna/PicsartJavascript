@@ -1,7 +1,7 @@
 const service = require('../service/postService');
-const handler = require('../utils/handler');
+const errorHandler = require('../utils/handler').errorHandler;
+const successHandler = require('../utils/handler').successHandler;
 const jwtService = require('../service/jwtService');
-const fs = require("fs");
 
 const PostController = {
 
@@ -11,42 +11,37 @@ const PostController = {
             post.userId = req.user.id;
             post.images = PostController.upload(req, res, next)
             await service.createPost(post);
-            handler.successHandler(post, req, res);
+            successHandler(post, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     updatePost: async (req, res, next) => {
         try {
             let post = PostController.mapToObj(req, res, next);
-            let decoded = await jwtService.verifyToken(req.token);
-            if (decoded._id === req.params.postId) {
-                let updatedPost = await service.updatePost(req.params.postId, post);
-                handler.successHandler(updatedPost, req, res)
-            } else {
-                res.status(401).send("You are not authenticated");
-            }
+            let updatedPost = await service.updatePost(req.params.postId, post);
+            successHandler(updatedPost, req, res)
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     getAllPosts: async (req, res) => {
         try {
             let allPosts = await service.getAllPosts();
-            handler.successHandler(allPosts, req, res);
+            successHandler(allPosts, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     getRecentPosts: async (req, res) => {
         try {
             let allPosts = await service.getRecentPosts();
-            handler.successHandler(allPosts, req, res);
+            successHandler(allPosts, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
@@ -67,36 +62,36 @@ const PostController = {
         try {
             let decoded = await jwtService.verifyToken(req.token);
             let result = await service.getPostsByUserId(decoded.id);
-            handler.successHandler(result, req, res);
+            successHandler(result, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     getPostById: async (req, res) => {
         try {
             let result = await service.getPostById(req.params.postId);
-            handler.successHandler(result, req, res);
+            successHandler(result, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     getPhotos: async (req, res) => {
         try {
             let result = await service.getPhotos(req.params.postId);
-            handler.successHandler(result, req, res);
+            successHandler(result, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     getPostByUserId: async (req, res) => {
         try {
             let result = await service.getPostsByUserId(req.params.id);
-            handler.successHandler(result, req, res);
+            successHandler(result, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
@@ -105,38 +100,28 @@ const PostController = {
             let searchPrm = req.param('search');
             let searchKey = searchPrm.split('desc:')[1];
             let result = await service.getPostByDesc(searchKey);
-            handler.successHandler(result, req, res);
+            successHandler(result, req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     deletePhoto: async (req, res) => {
         try {
-            let decoded = await jwtService.verifyToken(req.token);
-            if (decoded._id === req.params.postId) {
-                await service.deletePhoto(req.params.postId, req.params.photoId);
-                handler.successHandler("Photo removed", req, res);
-            } else {
-                res.status(401).send("You are not authenticated");
-            }
+            await service.deletePhoto(req.params.postId, req.params.photoId);
+            successHandler("Photo removed", req, res);
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
     deletePost: async (req, res) => {
         try {
-            let decoded = await jwtService.verifyToken(req.token);
-            if (decoded._id === req.params.postId) {
-                await service.delete(req.params.postId);
-                handler.successHandler(req.params.postId, req, res);
-            } else {
-                res.status(401).send("You are not authenticated");
-            }
+            await service.delete(req.params.postId);
+            successHandler({post: req.params.postId, title: req.body.title}, req, res);
 
         } catch (err) {
-            handler.errorHandler(err, req, res, 400);
+            errorHandler(err, req, res, 400);
         }
     },
 
@@ -152,22 +137,18 @@ const PostController = {
         return post;
     },
 
-    upload: (req, res, next) => {
+    upload: (req) => {
         const files = req.files;
-        if (!files) {
-            return next("error");
+        if (files) {
+            return files.map((file) => {
+                return {
+                    filename: Date.now() + '-' + file.originalname,
+                    mimeType: file.mimetype,
+                    contentType: `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+                }
+            });
         }
-
-        return files.map((file) => {
-            const img = fs.readFileSync(file.path);
-
-            return {
-                filename: file.originalname,
-                mimeType: file.mimetype,
-                contentType: img.toString('base64'), //newBuffer
-            }
-        });
     }
-};
+}
 
 module.exports = PostController;

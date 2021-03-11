@@ -1,7 +1,7 @@
 const validator = require('validator');
 const validText = require('./validText');
 
-const validatePost = (data) => {
+exports.validatePost = (data) => {
     let errors = {};
 
     data.title = validText(data.title) ? data.title : '';
@@ -15,9 +15,7 @@ const validatePost = (data) => {
     }
 
     return {
-        errors,
+        errors: JSON.stringify(errors),
         isValid: Object.keys(errors).length === 0
     };
 }
-
-module.exports = validatePost;

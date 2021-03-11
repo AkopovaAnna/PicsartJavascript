@@ -1,7 +1,7 @@
 const Validator = require('validator');
 const validText = require('./validText');
 
-const validateRegisterInput = (data) => {
+exports.validateRegisterInput = (data) => {
     let errors = {};
 
     data.email = validText(data.email) ? data.email : '';
@@ -19,7 +19,7 @@ const validateRegisterInput = (data) => {
         errors.password = 'Password field is required';
     }
 
-    if (!Validator.isLength(data.password, { min: 8})) {
+    if (!Validator.isLength(data.password, {min: 8})) {
         errors.password = 'Password must be at least 6 characters';
     }
 
@@ -28,9 +28,7 @@ const validateRegisterInput = (data) => {
     // }
 
     return {
-        errors,
+        errors: JSON.stringify(errors),
         isValid: Object.keys(errors).length === 0
     };
 }
-
-module.exports = validateRegisterInput;

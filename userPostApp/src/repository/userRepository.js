@@ -5,7 +5,8 @@ let UserRepository = {
         await user.save()
     },
     getUserById: async (id) => {
-       await User.findById(id);
+      let user = await User.findById(id);
+      return user;
     },
 
     updateUser: async (userId, updateBody) => {
