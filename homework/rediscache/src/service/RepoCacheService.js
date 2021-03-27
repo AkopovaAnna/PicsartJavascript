@@ -25,8 +25,8 @@ async function getReposCountFromDb() {
 }
 
 async function getRepos() {
-    const cachedReposCount = await getReposCountFromCache(redis);
-    const dbReposCount = await getReposCountFromDb(Repo);
+    const cachedReposCount = await getReposCountFromCache();
+    const dbReposCount = await getReposCountFromDb();
     if (cachedReposCount && cachedReposCount === dbReposCount.toString()) {
         return (cachedReposCount + " cached")
     } else {
@@ -48,7 +48,7 @@ async function listenForRepoChanges() {
 
 async function updateCache(count) {
     try {
-        const cachedReposCount = await getReposCountFromCache(redis);
+        const cachedReposCount = await getReposCountFromCache();
         if (cachedReposCount && cachedReposCount === count) {
             console.log("cached repos count " + cachedReposCount)
         } else {
