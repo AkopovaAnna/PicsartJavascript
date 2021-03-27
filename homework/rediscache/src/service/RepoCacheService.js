@@ -48,14 +48,9 @@ async function listenForRepoChanges() {
 
 async function updateCache(count) {
     try {
-        const cachedReposCount = await getReposCountFromCache();
-        if (cachedReposCount && cachedReposCount === count) {
-            console.log("cached repos count " + cachedReposCount)
-        } else {
-            await redisClient.setAsync('reposCacheCount', count);
-            await redisClient.expire('reposCacheCount', 30);
-            console.log("repos db count " + count)
-        }
+        await redisClient.setAsync('reposCacheCount', count);
+        await redisClient.expire('reposCacheCount', 30);
+        console.log("repos db count " + count)
     } catch (err) {
         console.log(err.message)
     }
