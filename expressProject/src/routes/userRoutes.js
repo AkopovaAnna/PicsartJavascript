@@ -2,13 +2,10 @@ const controller = require("../controller/userController");
 
 let router = require("express").Router();
 
-module.exports = (app) => {
-
-    router.get("/", controller.getHandler);
-    router.post("/", controller.create);
-    router.get("/:id", controller.getById);
-    router.put("/:id", controller.updateUser);
-    router.delete("/:id", controller.deleteUser);
-
-    app.use("/api/users", router);
-}
+exports = router.get("/", controller.getHandler)
+    .post("/", controller.create)
+    .get("/:id", controller.getById)
+    .put("/:id", controller.updateUser)
+    .delete("/:id", controller.deleteUser)
+// module.exports = router;
+// app.use("/api/users", router);
