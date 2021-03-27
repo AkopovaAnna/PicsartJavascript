@@ -6,7 +6,8 @@ this process is done by writing this command in terminal
 
 # npm run dev
 
-after that by usign this routes , the data from updated chache will be loaded:
+**
+after that by usign this route , the data from updated chache will be loaded:
 
 # Endpoint
 GET /api/repos/count
